@@ -1,29 +1,38 @@
-# File: MySQLServer.py
+-- task_2.sql
 
-import mysql.connector
-from mysql.connector import Error
+CREATE TABLE Authors (
+    author_id INT PRIMARY KEY,
+    author_name VARCHAR(215)
+);
 
-def create_database():
-    try:
-        # Connect to MySQL server
-        connection = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='your_password'  # 🔁 Replace with your actual password
-        )
+CREATE TABLE Books (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(130),
+    author_id INT,
+    price DOUBLE,
+    publication_date DATE,
+    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+);
 
-        if connection.is_connected():
-            cursor = connection.cursor()
-            cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
-            print("Database 'alx_book_store' created successfully!")
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(215),
+    email VARCHAR(215),
+    address TEXT
+);
 
-    except Error as e:
-        print(f"Error while connecting to MySQL: {e}")
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
 
-    finally:
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
-
-if __name__ == "__main__":
-    create_database()
+CREATE TABLE Order_Details (
+    orderdetailid INT PRIMARY KEY,
+    order_id INT,
+    book_id INT,
+    quantity DOUBLE,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (book_id) REFERENCES Books(book_id)
+);
